@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DropPin</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="app">
+
+    <header id="topbar">
+      <div class="logo">Drop<span>Pin</span></div>
+      <div class="actions">
+        <button class="btn">Log in</button>
+        <button class="btn primary" id="new-event-btn">+ New event</button>
+      </div>
+    </header>
+
+    <div id="main">
+
+      <aside id="sidebar">
+        <div id="sidebar-header">
+          <input type="text" id="search-input" placeholder="Search events..." />
+        </div>
+        <div class="filter-row">
+          <span class="chip active" data-filter="all">All</span>
+          <span class="chip" data-filter="today">Today</span>
+          <span class="chip" data-filter="week">This week</span>
+          <span class="chip" data-filter="public">Public</span>
+        </div>
+        <div id="event-list">
+          <!-- Populated by JS -->
+        </div>
+      </aside>
+
+      <div id="map-container">
+        <div id="map"></div>
+        <button id="fab" title="Drop a pin">
+          <svg viewBox="0 0 24 24" fill="white" width="20" height="20">
+            <path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- App JS -->
+  <script src="app.js"></script>
+
+</body>
+</html>

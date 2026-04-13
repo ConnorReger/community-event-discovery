@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Map</title>
+
+  <!-- Same Leaflet CSS you already use -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+  <style>
+    #map {
+      height: 400px;
+      margin: 20px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 style="text-align: center;">Event Map</h1>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Set view to Pitt campus
+    var map = L.map('map').setView([40.4442, -79.9532], 16);
+
+    // Map Loading for local use
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+    }).addTo(map);
+
+    // TODO: Once Hosted revert to OSM
+    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //  attribution: '&copy; OpenStreetMap contributors'
+    //}).addTo(map);
+
+    // TODO: Pins
+    // var eventIcon = L.icon({
+    //    iconUrl: [Icon Image Name].png,
+    //    iconSize: [Size],
+    //    iconAnchor: [16, 32],
+    //    popupAnchor: [0, -30]   Note: Are we planning on having pop up?
+    // });
+
+    // Add pins to map
+    function renderPins(events) {
+        events.forEach(e => {
+        const lat = parseFloat(e.LAT);
+        const lng = parseFloat(e.LNG);
+        const rating = parseFloat(e.RATING).toFixed(1);
+
+        L.marker([lat, lng]) //add after [lat, lng]: , { icon: eventIcon }
+            .addTo(map)
+            .bindPopup(`<b>${e.NAME}</b>`);
+        });
+    }
+
+    var placeholderEvents = [
+        { NAME: "Study Session", LAT: 40.4444, LNG: -79.9580 },
+        { NAME: "Club Fair",     LAT: 40.4444, LNG: -79.9530 },
+        { NAME: "Open Mic Night",LAT: 40.4428, LNG: -79.9561 }
+    ];
+
+    renderPins(placeholderEvents);
+
+  </script>
+
+</body>
+</html>

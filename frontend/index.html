@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="widthgit=device-width, initial-scale=1.0" />
   <title>DropPin</title>
-
+ 
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+ 
   <!-- App CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
+ 
   <div id="app">
-
+ 
     <header id="topbar">
       <div class="logo">Drop<span>Pin</span></div>
       <div class="actions">
@@ -22,9 +22,9 @@
         <button class="btn primary" id="new-event-btn">+ New event</button>
       </div>
     </header>
-
+ 
     <div id="main">
-
+ 
       <aside id="sidebar">
         <div id="sidebar-header">
           <input type="text" id="search-input" placeholder="Search events..." />
@@ -39,7 +39,7 @@
           <!-- Populated by JS -->
         </div>
       </aside>
-
+ 
       <div id="map-container">
         <div id="map"></div>
         <button id="fab" title="Drop a pin">
@@ -48,15 +48,16 @@
           </svg>
         </button>
       </div>
-
+ 
     </div>
   </div>
-
+ 
   <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+ 
   <!-- App JS -->
   <script src="app.js"></script>
-
+ 
 </body>
 </html>
+ 

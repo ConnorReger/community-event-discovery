@@ -1,0 +1,248 @@
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  background: #f4f4f2;
+  color: #1a1a1a;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── App Shell ── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ── Top Bar ── */
+#topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e3;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: #1a1a1a;
+}
+
+.logo span {
+  color: #2a7de1;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  font-size: 13px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: 1px solid #d0d0ce;
+  background: transparent;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn:hover {
+  background: #f4f4f2;
+}
+
+.btn.primary {
+  background: #2a7de1;
+  color: #ffffff;
+  border-color: #1a64c0;
+}
+
+.btn.primary:hover {
+  background: #1a64c0;
+}
+
+/* ── Main Layout ── */
+#main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+#sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: #ffffff;
+  border-right: 1px solid #e5e5e3;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  overflow: hidden;
+}
+
+#sidebar-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #e5e5e3;
+}
+
+#search-input {
+  width: 100%;
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 1px solid #d0d0ce;
+  border-radius: 8px;
+  background: #f7f7f5;
+  color: #1a1a1a;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+#search-input:focus {
+  border-color: #2a7de1;
+  background: #ffffff;
+}
+
+/* ── Filter Chips ── */
+.filter-row {
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e5e5e3;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1px solid #d0d0ce;
+  color: #666664;
+  background: #f4f4f2;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.chip:hover {
+  border-color: #aaa;
+  color: #1a1a1a;
+}
+
+.chip.active {
+  background: #deeeff;
+  color: #1a64c0;
+  border-color: #92bff0;
+}
+
+/* ── Event List ── */
+#event-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+#event-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+#event-list::-webkit-scrollbar-thumb {
+  background: #d0d0ce;
+  border-radius: 2px;
+}
+
+.event-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #efefed;
+  transition: background 0.12s;
+}
+
+.event-item:hover {
+  background: #f7f7f5;
+}
+
+.event-item.active {
+  background: #eef5ff;
+}
+
+.ev-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.ev-meta {
+  font-size: 11px;
+  color: #888886;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ev-badge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #deeeff;
+  color: #1a64c0;
+  font-weight: 500;
+}
+
+.ev-badge.private {
+  background: #fef0d6;
+  color: #905a0a;
+}
+
+/* ── Map Container ── */
+#map-container {
+  flex: 1;
+  position: relative;
+  background: #e8e8e4;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Floating Action Button ── */
+#fab {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #2a7de1;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  transition: background 0.15s, transform 0.15s;
+  box-shadow: 0 2px 8px rgba(42, 125, 225, 0.35);
+}
+
+#fab:hover {
+  background: #1a64c0;
+  transform: scale(1.07);
+}
+
+#fab:active {
+  transform: scale(0.96);
+}

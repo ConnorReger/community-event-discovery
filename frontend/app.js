@@ -1,3 +1,9 @@
+// Main Page Top Bar
+window.addEventListener('scroll', () => {
+  const topbar = document.getElementById('topbar');
+  topbar.classList.toggle('visible', window.scrollY > 50);
+});
+
 // ── Sample event data ──────────────────────────────────────────────
 const events = [
   {
@@ -148,7 +154,10 @@ document.querySelectorAll(".chip").forEach((chip) => {
     document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
     chip.classList.add("active");
     activeFilter = chip.dataset.filter;
-    refresh();
+    
+    map.whenReady(() => {
+      refresh();
+    });
   });
 });
 

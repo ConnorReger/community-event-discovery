@@ -88,6 +88,8 @@ function renderMarkers(filteredEvents) {
 // ── Render sidebar event list ─────────────────────────────────────
 function renderList(filteredEvents) {
   const list = document.getElementById("event-list");
+  if (!list) return;
+  
   list.innerHTML = "";
 
   if (filteredEvents.length === 0) {
@@ -148,13 +150,14 @@ function refresh() {
   renderMarkers(filtered);
 }
 
+
 // ── Filter chip clicks ────────────────────────────────────────────
 document.querySelectorAll(".chip").forEach((chip) => {
   chip.addEventListener("click", () => {
     document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
     chip.classList.add("active");
     activeFilter = chip.dataset.filter;
-    
+
     map.whenReady(() => {
       refresh();
     });
@@ -162,20 +165,26 @@ document.querySelectorAll(".chip").forEach((chip) => {
 });
 
 // ── Search input ──────────────────────────────────────────────────
-document.getElementById("search-input").addEventListener("input", (e) => {
-  searchQuery = e.target.value;
-  refresh();
-});
+const searchInput = document.getElementById('search-input');
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    refresh();
+  });
+}
 
 // ── FAB: drop a new pin on map click ─────────────────────────────
 // Clicking the FAB activates "drop mode" — the next map click places a pin
 let dropMode = false;
 
-document.getElementById("fab").addEventListener("click", () => {
-  dropMode = !dropMode;
-  document.getElementById("fab").style.background = dropMode ? "#e24b4a" : "";
-  map.getContainer().style.cursor = dropMode ? "crosshair" : "";
-});
+const fab = document.getElementById('fab');
+if (fab) {
+  fab.addEventListener('click', () => {
+    dropMode = !dropMode;
+    fab.style.background = dropMode ? "#e24b4a" : "";
+    map.getContainer().style.cursor = dropMode ? "crosshair" : "";
+  });
+}
 
 map.on("click", (e) => {
   if (!dropMode) return;
@@ -201,9 +210,12 @@ map.on("click", (e) => {
 
 // ── New Event button ──────────────────────────────────────────────
 // TODO: hook this up to a proper event creation form/modal
-document.getElementById("new-event-btn").addEventListener("click", () => {
-  alert("TODO: open new event creation modal");
-});
+const newEventBtn = document.getElementById('new-event-btn');
+if (newEventBtn) {
+  newEventBtn.addEventListener('click', () => {
+    alert("TODO: open new event creation modal");
+  });
+}
 
 // ── Initial render ────────────────────────────────────────────────
 refresh();

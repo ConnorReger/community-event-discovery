@@ -217,5 +217,13 @@ if (newEventBtn) {
   });
 }
 
+// ── Auto-activate drop mode if redirected from "Create Event" ────────
+if (new URLSearchParams(window.location.search).get('newEvent') === '1') {
+  dropMode = true;
+  const fab = document.getElementById('fab');
+  if (fab) fab.style.background = "#e24b4a";
+  map.getContainer().style.cursor = "crosshair";
+}
+
 // ── Initial render ────────────────────────────────────────────────
 refresh();

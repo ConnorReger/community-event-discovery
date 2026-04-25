@@ -1,10 +1,10 @@
-// Main Page Top Bar
-window.addEventListener('scroll', () => {
-  const topbar = document.getElementById('topbar');
-  topbar.classList.toggle('visible', window.scrollY > 50);
+window.addEventListener("scroll", () => {
+  const topbar = document.getElementById("topbar");
+  if (topbar) {
+    topbar.classList.toggle("visible", window.scrollY > 50);
+  }
 });
 
-// ── Sample event data ──────────────────────────────────────────────
 const events = [
   {
     id: 1,
@@ -20,39 +20,80 @@ const events = [
     type: "public",
     time: "Sat · 8:00 AM",
     lat: 40.4446,
-    lng: -79.9990,
+    lng: -79.999,
   },
   {
     id: 3,
     title: "Private Rooftop Hangout",
     type: "private",
     time: "Fri · 7:00 PM",
-    lat: 40.4380,
-    lng: -79.9920,
+    lat: 40.438,
+    lng: -79.992,
   },
   {
     id: 4,
-    title: "Trail Run — Hartwood",
+    title: "Trail Run - Hartwood",
     type: "public",
     time: "Sun · 7:30 AM",
-    lat: 40.4500,
-    lng: -79.9870,
+    lat: 40.45,
+    lng: -79.987,
   },
 ];
 
-// ── Map setup ─────────────────────────────────────────────────────
-// TODO: Replace the coordinates below with your desired default center
+const chats = {
+  jules: {
+    eventId: 3,
+    name: "jules.m",
+    handle: "@julesm",
+    subtitle: "Private Rooftop Hangout",
+    avatar: "J",
+    messages: [
+      { sender: "other", text: "You still coming tonight?" },
+      { sender: "me", text: "Yeah, I’m in. What time are you heading up?" },
+      { sender: "other", text: "7 works. Bring a jacket, it gets windy." },
+    ],
+  },
+  maya: {
+    name: "maya.r",
+    handle: "@mayar",
+    subtitle: "Late night planning",
+    avatar: "M",
+    messages: [
+      { sender: "other", text: "Want to make this one invite-only?" },
+      { sender: "me", text: "Yeah, let’s keep it small." },
+      { sender: "other", text: "Perfect. I’ll send over the list." },
+    ],
+  },
+  leo: {
+    name: "leo.k",
+    handle: "@leok",
+    subtitle: "Coffee after cleanup?",
+    avatar: "L",
+    messages: [
+      { sender: "other", text: "You free after the cleanup?" },
+      { sender: "me", text: "I should be. Thinking coffee?" },
+      { sender: "other", text: "Exactly. There’s a spot two blocks away." },
+    ],
+  },
+};
+
+const chatsByEventId = Object.fromEntries(
+  Object.entries(chats)
+    .filter(([, chat]) => chat.eventId)
+    .map(([chatId, chat]) => [chat.eventId, { chatId, ...chat }]),
+);
+
 const DEFAULT_CENTER = [40.4406, -79.9959];
-const DEFAULT_ZOOM   = 14;
+const DEFAULT_ZOOM = 14;
 
 const map = L.map("map").setView(DEFAULT_CENTER, DEFAULT_ZOOM);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+  attribution:
+    "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
   maxZoom: 19,
 }).addTo(map);
 
-// ── Custom pin icon ───────────────────────────────────────────────
 function makeIcon(color = "#2a7de1") {
   return L.divIcon({
     className: "",
@@ -62,38 +103,51 @@ function makeIcon(color = "#2a7de1") {
           d="M14 0C6.27 0 0 6.27 0 14c0 9.625 14 22 14 22S28 23.625 28 14C28 6.27 21.73 0 14 0z"/>
         <circle fill="#fff" cx="14" cy="14" r="5"/>
       </svg>`,
-    iconSize:   [28, 36],
+    iconSize: [28, 36],
     iconAnchor: [14, 36],
-    popupAnchor:[0, -36],
+    popupAnchor: [0, -36],
   });
 }
 
-// ── Render markers from event data ────────────────────────────────
 const markers = {};
+let currentChatId = "jules";
+let currentChat = chats[currentChatId];
 
 function renderMarkers(filteredEvents) {
-  // Remove existing markers
-  Object.values(markers).forEach((m) => map.removeLayer(m));
+  Object.values(markers).forEach((marker) => map.removeLayer(marker));
 
   filteredEvents.forEach((ev) => {
-    const color  = ev.type === "private" ? "#e8a020" : "#2a7de1";
+    const color = ev.type === "private" ? "#ffb647" : "#3a7bfd";
     const marker = L.marker([ev.lat, ev.lng], { icon: makeIcon(color) })
       .addTo(map)
       .bindPopup(`<strong>${ev.title}</strong><br/><small>${ev.time}</small>`);
+
+    marker.on("click", () => {
+      highlightEvent(ev.id);
+      if (ev.type === "private") {
+        openChatForEvent(ev.id);
+      }
+    });
 
     markers[ev.id] = marker;
   });
 }
 
-// ── Render sidebar event list ─────────────────────────────────────
+function highlightEvent(eventId) {
+  document.querySelectorAll(".event-item").forEach((el) => {
+    el.classList.toggle("active", Number(el.dataset.id) === eventId);
+  });
+}
+
 function renderList(filteredEvents) {
   const list = document.getElementById("event-list");
   if (!list) return;
-  
+
   list.innerHTML = "";
 
   if (filteredEvents.length === 0) {
-    list.innerHTML = `<p style="padding:16px; color:#888; font-size:13px;">No events found.</p>`;
+    list.innerHTML =
+      '<p style="padding:16px; color:#75819a; font-size:13px;">No events found.</p>';
     return;
   }
 
@@ -104,19 +158,23 @@ function renderList(filteredEvents) {
     item.innerHTML = `
       <div class="ev-title">${ev.title}</div>
       <div class="ev-meta">
-        <span class="ev-badge ${ev.type === "private" ? "private" : ""}">${ev.type === "private" ? "Private" : "Public"}</span>
+        <span class="ev-badge ${ev.type === "private" ? "private" : ""}">
+          ${ev.type === "private" ? "Private" : "Public"}
+        </span>
         ${ev.time}
       </div>`;
 
-    // Clicking a list item opens its popup on the map
     item.addEventListener("click", () => {
-      document.querySelectorAll(".event-item").forEach((el) => el.classList.remove("active"));
-      item.classList.add("active");
+      highlightEvent(ev.id);
 
       const marker = markers[ev.id];
       if (marker) {
         map.setView([ev.lat, ev.lng], 15, { animate: true });
         marker.openPopup();
+      }
+
+      if (ev.type === "private") {
+        openChatForEvent(ev.id);
       }
     });
 
@@ -124,21 +182,24 @@ function renderList(filteredEvents) {
   });
 }
 
-// ── Filter logic ──────────────────────────────────────────────────
 let activeFilter = "all";
-let searchQuery  = "";
+let searchQuery = "";
 
 function getFiltered() {
   return events.filter((ev) => {
     const matchesFilter =
-      activeFilter === "all"    ? true :
-      activeFilter === "public" ? ev.type === "public" :
-      activeFilter === "today"  ? ev.time.startsWith("Today") :
-      activeFilter === "week"   ? true : true;
+      activeFilter === "all"
+        ? true
+        : activeFilter === "public"
+          ? ev.type === "public"
+          : activeFilter === "today"
+            ? ev.time.startsWith("Today")
+            : activeFilter === "week"
+              ? true
+              : true;
 
     const matchesSearch =
-      searchQuery === "" ||
-      ev.title.toLowerCase().includes(searchQuery.toLowerCase());
+      searchQuery === "" || ev.title.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesFilter && matchesSearch;
   });
@@ -150,38 +211,32 @@ function refresh() {
   renderMarkers(filtered);
 }
 
-
-// ── Filter chip clicks ────────────────────────────────────────────
 document.querySelectorAll(".chip").forEach((chip) => {
   chip.addEventListener("click", () => {
     document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
     chip.classList.add("active");
     activeFilter = chip.dataset.filter;
-
-    map.whenReady(() => {
-      refresh();
-    });
+    map.whenReady(refresh);
   });
 });
 
-// ── Search input ──────────────────────────────────────────────────
-const searchInput = document.getElementById('search-input');
+const searchInput = document.getElementById("search-input");
 if (searchInput) {
-  searchInput.addEventListener('input', (e) => {
+  searchInput.addEventListener("input", (e) => {
     searchQuery = e.target.value;
     refresh();
   });
 }
 
-// ── FAB: drop a new pin on map click ─────────────────────────────
-// Clicking the FAB activates "drop mode" — the next map click places a pin
 let dropMode = false;
 
-const fab = document.getElementById('fab');
+const fab = document.getElementById("fab");
 if (fab) {
-  fab.addEventListener('click', () => {
+  fab.addEventListener("click", () => {
     dropMode = !dropMode;
-    fab.style.background = dropMode ? "#e24b4a" : "";
+    fab.style.background = dropMode
+      ? "linear-gradient(135deg, #ff7a59, #ff4d6d)"
+      : "";
     map.getContainer().style.cursor = dropMode ? "crosshair" : "";
   });
 }
@@ -190,40 +245,183 @@ map.on("click", (e) => {
   if (!dropMode) return;
 
   const title = prompt("Event name:");
-  if (!title) { dropMode = false; map.getContainer().style.cursor = ""; return; }
+  if (!title) {
+    dropMode = false;
+    map.getContainer().style.cursor = "";
+    return;
+  }
 
   const newEvent = {
-    id:    Date.now(),
+    id: Date.now(),
     title,
-    type:  "public",
-    time:  "Just added",
-    lat:   e.latlng.lat,
-    lng:   e.latlng.lng,
+    type: "public",
+    time: "Just added",
+    lat: e.latlng.lat,
+    lng: e.latlng.lng,
   };
 
   events.push(newEvent);
   dropMode = false;
-  document.getElementById("fab").style.background = "";
+  if (fab) {
+    fab.style.background = "";
+  }
   map.getContainer().style.cursor = "";
   refresh();
 });
 
-// ── New Event button ──────────────────────────────────────────────
-// TODO: hook this up to a proper event creation form/modal
-const newEventBtn = document.getElementById('new-event-btn');
+const newEventBtn = document.getElementById("new-event-btn");
 if (newEventBtn) {
-  newEventBtn.addEventListener('click', () => {
+  newEventBtn.addEventListener("click", () => {
     alert("TODO: open new event creation modal");
   });
 }
 
-// ── Auto-activate drop mode if redirected from "Create Event" ────────
-if (new URLSearchParams(window.location.search).get('newEvent') === '1') {
+if (new URLSearchParams(window.location.search).get("newEvent") === "1") {
   dropMode = true;
-  const fab = document.getElementById('fab');
-  if (fab) fab.style.background = "#e24b4a";
+  if (fab) {
+    fab.style.background = "linear-gradient(135deg, #ff7a59, #ff4d6d)";
+  }
   map.getContainer().style.cursor = "crosshair";
 }
 
-// ── Initial render ────────────────────────────────────────────────
+const chatPopup = document.getElementById("chat-popup");
+const chatLauncher = document.getElementById("chat-launcher");
+const chatClose = document.getElementById("chat-close");
+const chatMinimize = document.getElementById("chat-minimize");
+const chatSwitcherToggle = document.getElementById("chat-switcher-toggle");
+const chatSwitcher = document.getElementById("chat-switcher");
+const chatForm = document.getElementById("chat-form");
+const chatMessages = document.getElementById("chat-messages");
+const chatTextInput = document.getElementById("chat-text-input");
+const chatTitle = document.getElementById("chat-title");
+const chatSubtitle = document.getElementById("chat-subtitle");
+const chatThreadName = document.getElementById("chat-thread-name");
+const chatThreadHandle = document.getElementById("chat-thread-handle");
+const chatAvatar = document.querySelector(".chat-avatar");
+const chatThreadAvatar = document.querySelector(".chat-thread-avatar");
+const chatSwitchItems = document.querySelectorAll(".chat-switch-item");
+
+function setChatVisibility(isVisible) {
+  if (!chatPopup || !chatLauncher) return;
+  chatPopup.classList.toggle("hidden", !isVisible);
+  chatLauncher.style.display = isVisible ? "none" : "inline-flex";
+  if (!isVisible && chatSwitcher) {
+    chatSwitcher.classList.add("hidden");
+  }
+}
+
+function scrollChatToBottom() {
+  if (chatMessages) {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+}
+
+function renderChatMessages() {
+  if (!chatMessages || !currentChat) return;
+
+  chatMessages.innerHTML = "";
+
+  currentChat.messages.forEach((entry) => {
+    const row = document.createElement("div");
+    row.className = `message-row ${entry.sender}`;
+
+    const bubble = document.createElement("div");
+    bubble.className = `message ${entry.sender}`;
+    bubble.textContent = entry.text;
+
+    row.appendChild(bubble);
+    chatMessages.appendChild(row);
+  });
+
+  scrollChatToBottom();
+}
+
+function renderChatHeader() {
+  if (!currentChat) return;
+
+  if (chatTitle) chatTitle.textContent = currentChat.name;
+  if (chatSubtitle) chatSubtitle.textContent = currentChat.subtitle;
+  if (chatThreadName) chatThreadName.textContent = currentChat.name;
+  if (chatThreadHandle) chatThreadHandle.textContent = currentChat.handle;
+  if (chatAvatar) chatAvatar.textContent = currentChat.avatar;
+  if (chatThreadAvatar) chatThreadAvatar.textContent = currentChat.avatar;
+}
+
+function renderChatSwitcher() {
+  chatSwitchItems.forEach((item) => {
+    item.classList.toggle("active", item.dataset.chatId === currentChatId);
+  });
+}
+
+function openChatById(chatId) {
+  const chatData = chats[chatId];
+  if (!chatData) return;
+
+  currentChatId = chatId;
+  currentChat = chatData;
+  renderChatHeader();
+  renderChatMessages();
+  renderChatSwitcher();
+  setChatVisibility(true);
+}
+
+function openChatForEvent(eventId) {
+  const chatData = chatsByEventId[eventId];
+  if (!chatData) return;
+
+  openChatById(chatData.chatId);
+}
+
+if (chatLauncher) {
+  chatLauncher.addEventListener("click", () => {
+    setChatVisibility(true);
+    scrollChatToBottom();
+    chatTextInput?.focus();
+  });
+}
+
+if (chatClose) {
+  chatClose.addEventListener("click", () => setChatVisibility(false));
+}
+
+if (chatMinimize) {
+  chatMinimize.addEventListener("click", () => setChatVisibility(false));
+}
+
+if (chatSwitcherToggle && chatSwitcher) {
+  chatSwitcherToggle.addEventListener("click", () => {
+    chatSwitcher.classList.toggle("hidden");
+  });
+}
+
+chatSwitchItems.forEach((item) => {
+  item.addEventListener("click", () => {
+    openChatById(item.dataset.chatId);
+    chatSwitcher?.classList.add("hidden");
+  });
+});
+
+if (chatForm && chatTextInput) {
+  chatForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = chatTextInput.value.trim();
+    if (!text || !currentChat) return;
+
+    currentChat.messages.push({ sender: "me", text });
+    renderChatMessages();
+    chatTextInput.value = "";
+
+    window.setTimeout(() => {
+      currentChat.messages.push({
+        sender: "other",
+        text: "Perfect. I’ll message you when everyone gets there.",
+      });
+      renderChatMessages();
+    }, 700);
+  });
+}
+
+renderChatHeader();
+renderChatMessages();
+renderChatSwitcher();
 refresh();

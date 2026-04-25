@@ -33,6 +33,11 @@ No additional setup outside of optional account creation
 3. Navigate to the map page by clicking the "full screen" button or the "create event" button to view main features
 
 ## Team Member Contributions
-Front-End:
-Back-End: 
-Full-Stack: 
+| Member | Role | Contribution |
+|--------|------|-------------|
+| Connor Reger | Full-Stack | Login screen with guest bypass (feature/login, PR #10) |
+| Pearl Singer | Front-End | Visual bugfixes to align UI closer to functional requirements |
+| Margo Brown | Front-End | Landing page with map preview, navigation, and event creation flow (feature/main-page, PR #13) |
+| Huy (Will) Huynh | Back-End | Refactored backend with improved logic, stored procedures, and views (PR #14) |
+| Aiden Nemeroff | Back-End | Event favoriting backend implementation (PR #12) |
+| Hailey Lisak | Front-End | Chat/DM feature outline in HTML and CSS (feature/chat-outline, PR #11) |

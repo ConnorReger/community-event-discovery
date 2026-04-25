@@ -36,7 +36,7 @@ No additional setup outside of optional account creation
 | Member | Role | Contribution |
 |--------|------|-------------|
 | Connor Reger | Full-Stack | Login screen with guest bypass (feature/login, PR #10) |
-| Pearl Singer | Front-End | Visual bugfixes to align UI closer to functional requirements |
+| Pearl Singer | Front-End | Visual bugfixes to align UI closer to functional requirements, PR #16|
 | Margo Brown | Front-End | Landing page with map preview, navigation, and event creation flow (feature/main-page, PR #13) |
 | Huy (Will) Huynh | Back-End | Refactored backend with improved logic, stored procedures, and views (PR #14) |
 | Aiden Nemeroff | Back-End | Event favoriting backend implementation (PR #12) |

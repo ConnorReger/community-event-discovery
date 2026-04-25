@@ -23,3 +23,16 @@ Between the news, word of mouth, and the multitude of social media apps, it can 
 2. Create local branch
 3. Commit frequently with meaningful messages
 4. Push and make a pull request
+
+## Installation/Setup
+No additional setup outside of optional account creation
+
+## Running the Application
+1. Access landing page
+2. Create an account, log-in, or access as a guest (no further intervention necessary)
+3. Navigate to the map page by clicking the "full screen" button or the "create event" button to view main features
+
+## Team Member Contributions
+Front-End:
+Back-End: 
+Full-Stack: 

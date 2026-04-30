@@ -257,6 +257,12 @@ document.getElementById("cancel-button").addEventListener("click", () => {
   document.getElementById("event-modal").style.display = "none";
   document.body.style.overflow = "";
   dropMode = !dropMode;
+  
+  if (fab) {
+    fab.style.background = "";
+  }
+
+  map.getContainer().style.cursor = "";
 });
 
 //Create Event
@@ -293,7 +299,9 @@ document.getElementById("create-button").addEventListener("click", () => {
 const newEventBtn = document.getElementById("new-event-btn");
 if (newEventBtn) {
   newEventBtn.addEventListener("click", () => {
-    alert("TODO: open new event creation modal");
+    dropMode = !dropMode;
+    fab.style.background = dropMode ? "linear-gradient(135deg, #ff7a59, #ff4d6d)" : "";
+    map.getContainer().style.cursor = dropMode ? "crosshair" : "";
   });
 }
 

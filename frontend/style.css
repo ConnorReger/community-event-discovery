@@ -585,6 +585,101 @@ body {
   font-family: "Manrope", system-ui, sans-serif;
 }
 
+/* Event Modal */
+
+.event-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.event-modal-box {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-field {
+  display: flex; 
+  align-items: center; 
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.modal-input {
+  flex: 1;
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  outline: none;
+  color: #1a1a2e;
+  
+}
+
+#name-input {
+  transition: border-color 0.2s;
+}
+
+#name-input:focus {
+  border-color: #4f6ef7;
+}
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: #e0e0e0;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.toggle input:checked + .toggle-track {
+  background: #4f6ef7;
+}
+
+.toggle input:checked + .toggle-track::after {
+  transform: translateX(20px);
+}
+
 @media (max-width: 980px) {
   #sidebar {
     width: 280px;

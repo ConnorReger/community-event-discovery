@@ -25,6 +25,8 @@
       </div>
     </header>
 
+    <!-- Right Bar -->
+
     <div id="main">
       <aside id="sidebar">
         <div id="sidebar-header">
@@ -44,6 +46,8 @@
       <div id="map-container">
         <div id="map"></div>
 
+        <!-- Chat Room Call Button -->
+
         <div id="chat-launch-area">
           <button id="chat-launcher" title="Open private chat">
             <span class="chat-launch-icon" aria-hidden="true">
@@ -60,6 +64,8 @@
             <span>Private chat</span>
           </button>
         </div>
+
+        <!-- Chat Feature -->
 
         <section id="chat-popup" class="open" aria-label="Private chat window">
           <div id="chat-header">
@@ -151,13 +157,49 @@
           </form>
         </section>
 
+        <!-- Create New Event -->
+
         <button id="fab" title="Drop a pin">
           <svg viewBox="0 0 24 24" fill="white" width="20" height="20">
             <path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z" />
           </svg>
         </button>
       </div>
+
     </div>
+
+    <!-- Event Modal -->
+    <div class="event-modal" id="event-modal" style="display:none;">
+      <div class="event-modal-box" id="event-modal-box">
+        <h1 class="logo" style="text-align: center; font-size:36px;">Create<span>Event</span></h1>
+
+        <div id="event-name" class="modal-field">
+          <h2 class="logo" style="font-size: 18px; font-weight: 600;">Event Name:</h2>
+          <input type="text" id="name-input" class="modal-input" placeholder="ex: Study Session" />
+        </div>
+
+        <div id="event-date-time" class="modal-field">
+          <h2 class="logo" style="font-size: 18px; font-weight: 600;">Schedule Your Event:</h2>
+          <input type="datetime-local" id="date-input" class="modal-input"/>
+        </div>
+
+        <div id="event-privacy" class="modal-field">
+          <h2 class="logo" style="font-size: 18px; font-weight: 600;">Public </h2>
+          <label class="toggle">
+            <input type="checkbox" id="private-input"/>
+            <span class="toggle-track"></span>
+          </label>
+          <h2 class="logo" style="font-size: 18px; font-weight: 600;"> Private</h2>
+        </div>
+
+        <div id="form-submission" class="modal-field" style="justify-content: center;">
+          <button id="cancel-button" class="btn" style="font-weight: 500; font-size: 18px;">Cancel</button>
+          <button id="create-button" class="btn primary" style="font-weight: 500; font-size: 18px;">+ Create</button>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

@@ -229,6 +229,7 @@ if (searchInput) {
 }
 
 let dropMode = false;
+let pendingLatLng = null;
 
 const fab = document.getElementById("fab");
 if (fab) {
@@ -244,27 +245,47 @@ if (fab) {
 map.on("click", (e) => {
   if (!dropMode) return;
 
-  const title = prompt("Event name:");
-  if (!title) {
-    dropMode = false;
-    map.getContainer().style.cursor = "";
-    return;
-  }
+  pendingLatLng = e.latlng;
+
+  document.getElementById("event-modal").style.display = "flex";
+  document.body.style.overflow = "hidden";
+
+});
+
+// Cancel Event
+document.getElementById("cancel-button").addEventListener("click", () => {
+  document.getElementById("event-modal").style.display = "none";
+  document.body.style.overflow = "";
+  dropMode = !dropMode;
+});
+
+//Create Event
+document.getElementById("create-button").addEventListener("click", () => {
+  const title = document.getElementById("name-input").value.trim();
+  const datetime = document.getElementById("date-input").value;
+  const isPrivate = document.getElementById("private-input").checked;
+
+  if(!title || !datetime || !pendingLatLng) return;
+
+  document.getElementById("event-modal").style.display = "none";
+  document.body.style.overflow = "";
+  dropMode = !dropMode;
 
   const newEvent = {
     id: Date.now(),
-    title,
-    type: "public",
-    time: "Just added",
-    lat: e.latlng.lat,
-    lng: e.latlng.lng,
-  };
+    title: title,
+    type: isPrivate ? "private" : "public",
+    time: new Date(datetime).toLocaleString([], { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }),
+    lat: pendingLatLng.lat,
+    lng: pendingLatLng.lng,
+  }
 
   events.push(newEvent);
-  dropMode = false;
+
   if (fab) {
     fab.style.background = "";
   }
+
   map.getContainer().style.cursor = "";
   refresh();
 });

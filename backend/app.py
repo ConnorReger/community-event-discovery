@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import mysql.connector
 import os
@@ -40,6 +40,28 @@ def health_check():
         "message": "Community Event Discovery backend is live."
     })
 
+
+@app.route("/events", methods=["POST"])
+def create_event():
+    data = request.get_json()
+
+    title = data.get("title")
+    type_ = data.get("type")
+    time = data.get("time")
+    lat = data.get("lat")
+    lng = data.get("lng")
+
+    try:
+        conn = mysql.connector.connect(**get_db_config())
+        cursor = conn.cursor()
+
+        # TODO: write insert query here, refer to app.js line 296
+
+        cursor.close()
+        conn.close()
+        return jsonify({"status": "ok", "message": "Event created."})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

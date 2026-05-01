@@ -1,5 +1,5 @@
 window.addEventListener("scroll", () => {
-  const topbar = document.getElementById("topbar");
+  const topbar = document.getElementById("topbar") || document.getElementById("topbar-main");
   if (topbar) {
     topbar.classList.toggle("visible", window.scrollY > 50);
   }
@@ -39,6 +39,22 @@ const events = [
     lng: -79.987,
   },
 ];
+
+function loadEventsFromServer() {
+  fetch("http://localhost:5000/events")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status !== "ok") {
+        console.error("Failed to load events:", data.message);
+        return;
+      }
+      // Replace the in-memory events array with what the server returned
+      events.length = 0;
+      data.events.forEach((ev) => events.push(ev));
+      refresh();
+    })
+    .catch((err) => console.error("Failed to fetch events:", err));
+}
 
 const chats = {
   jules: {
@@ -253,48 +269,57 @@ map.on("click", (e) => {
 });
 
 // Cancel Event
-document.getElementById("cancel-button").addEventListener("click", () => {
-  document.getElementById("event-modal").style.display = "none";
-  document.body.style.overflow = "";
-  dropMode = !dropMode;
-  
-  if (fab) {
-    fab.style.background = "";
-  }
+const cancelButton = document.getElementById("cancel-button");
+if (cancelButton) {
+  cancelButton.addEventListener("click", () => {
+    document.getElementById("event-modal").style.display = "none";
+    document.body.style.overflow = "";
+    dropMode = false;
+    if (fab) fab.style.background = "";
+    map.getContainer().style.cursor = "";
+  });
+}
 
-  map.getContainer().style.cursor = "";
-});
+// Create Event
+const createButton = document.getElementById("create-button");
+if (createButton) {
+  createButton.addEventListener("click", () => {
+    const title = document.getElementById("name-input").value.trim();
+    const datetime = document.getElementById("date-input").value;
+    const isPrivate = document.getElementById("private-input").checked;
 
-//Create Event
-document.getElementById("create-button").addEventListener("click", () => {
-  const title = document.getElementById("name-input").value.trim();
-  const datetime = document.getElementById("date-input").value;
-  const isPrivate = document.getElementById("private-input").checked;
+    if (!title || !datetime || !pendingLatLng) return;
 
-  if(!title || !datetime || !pendingLatLng) return;
+    document.getElementById("event-modal").style.display = "none";
+    document.body.style.overflow = "";
+    dropMode = false;
+    if (fab) fab.style.background = "";
+    map.getContainer().style.cursor = "";
 
-  document.getElementById("event-modal").style.display = "none";
-  document.body.style.overflow = "";
-  dropMode = !dropMode;
+    const payload = {
+      title,
+      type: isPrivate ? "private" : "public",
+      start_time: datetime,
+      lat: pendingLatLng.lat,
+      lng: pendingLatLng.lng,
+    };
 
-  const newEvent = {
-    id: Date.now(),
-    title: title,
-    type: isPrivate ? "private" : "public",
-    time: new Date(datetime).toLocaleString([], { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }),
-    lat: pendingLatLng.lat,
-    lng: pendingLatLng.lng,
-  }
-
-  events.push(newEvent);
-
-  if (fab) {
-    fab.style.background = "";
-  }
-
-  map.getContainer().style.cursor = "";
-  refresh();
-});
+    fetch("http://localhost:5000/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status !== "ok") {
+          console.error("Create failed:", data.message);
+          return;
+        }
+        loadEventsFromServer();
+      })
+      .catch((err) => console.error("Network error:", err));
+  });
+}
 
 const newEventBtn = document.getElementById("new-event-btn");
 if (newEventBtn) {
@@ -454,3 +479,4 @@ renderChatHeader();
 renderChatMessages();
 renderChatSwitcher();
 refresh();
+loadEventsFromServer();

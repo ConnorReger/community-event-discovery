@@ -27,8 +27,8 @@ body {
     radial-gradient(circle at bottom right, rgba(255, 182, 71, 0.14), transparent 22%),
     var(--bg);
   color: var(--text);
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow: auto;
 }
 
 #app {
@@ -86,6 +86,19 @@ body {
   background: linear-gradient(135deg, var(--brand), var(--brand-deep));
   color: #fff;
   border-color: transparent;
+}
+
+.tagline {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+  position: relative; /* ensures it stays in flow */
 }
 
 #main {

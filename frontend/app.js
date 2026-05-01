@@ -1,5 +1,5 @@
 window.addEventListener("scroll", () => {
-  const topbar = document.getElementById("topbar");
+  const topbar = document.getElementById("topbar") || document.getElementById("topbar-main");
   if (topbar) {
     topbar.classList.toggle("visible", window.scrollY > 50);
   }
@@ -253,48 +253,52 @@ map.on("click", (e) => {
 });
 
 // Cancel Event
-document.getElementById("cancel-button").addEventListener("click", () => {
-  document.getElementById("event-modal").style.display = "none";
-  document.body.style.overflow = "";
-  dropMode = !dropMode;
-  
-  if (fab) {
-    fab.style.background = "";
-  }
+const cancelButton = document.getElementById("cancel-button");
+if (cancelButton) {
+  cancelButton.addEventListener("click", () => {
+    document.getElementById("event-modal").style.display = "none";
+    document.body.style.overflow = "";
+    dropMode = false;
+    if (fab) fab.style.background = "";
+    map.getContainer().style.cursor = "";
+  });
+}
 
-  map.getContainer().style.cursor = "";
-});
+// Create Event
+const createButton = document.getElementById("create-button");
+if (createButton) {
+  createButton.addEventListener("click", () => {
+    const title = document.getElementById("name-input").value.trim();
+    const datetime = document.getElementById("date-input").value;
+    const isPrivate = document.getElementById("private-input").checked;
 
-//Create Event
-document.getElementById("create-button").addEventListener("click", () => {
-  const title = document.getElementById("name-input").value.trim();
-  const datetime = document.getElementById("date-input").value;
-  const isPrivate = document.getElementById("private-input").checked;
+    if (!title || !datetime || !pendingLatLng) return;
 
-  if(!title || !datetime || !pendingLatLng) return;
+    document.getElementById("event-modal").style.display = "none";
+    document.body.style.overflow = "";
+    dropMode = false;
 
-  document.getElementById("event-modal").style.display = "none";
-  document.body.style.overflow = "";
-  dropMode = !dropMode;
+    const d = new Date(datetime);
+    const weekday = d.toLocaleString([], { weekday: 'short' });
+    const time = d.toLocaleString([], { hour: 'numeric', minute: '2-digit' });
+    const date = d.toLocaleString([], { month: 'short', day: 'numeric' });
+    const formatted = `${weekday}, ${date} · ${time}`;
 
-  const newEvent = {
-    id: Date.now(),
-    title: title,
-    type: isPrivate ? "private" : "public",
-    time: new Date(datetime).toLocaleString([], { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }),
-    lat: pendingLatLng.lat,
-    lng: pendingLatLng.lng,
-  }
+    const newEvent = {
+      id: Date.now(),
+      title,
+      type: isPrivate ? "private" : "public",
+      time: formatted,
+      lat: pendingLatLng.lat,
+      lng: pendingLatLng.lng,
+    };
 
-  events.push(newEvent);
-
-  if (fab) {
-    fab.style.background = "";
-  }
-
-  map.getContainer().style.cursor = "";
-  refresh();
-});
+    events.push(newEvent);
+    if (fab) fab.style.background = "";
+    map.getContainer().style.cursor = "";
+    refresh();
+  });
+}
 
 const newEventBtn = document.getElementById("new-event-btn");
 if (newEventBtn) {

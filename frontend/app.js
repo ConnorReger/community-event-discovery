@@ -40,6 +40,22 @@ const events = [
   },
 ];
 
+function loadEventsFromServer() {
+  fetch("http://localhost:5000/events")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status !== "ok") {
+        console.error("Failed to load events:", data.message);
+        return;
+      }
+      // Replace the in-memory events array with what the server returned
+      events.length = 0;
+      data.events.forEach((ev) => events.push(ev));
+      refresh();
+    })
+    .catch((err) => console.error("Failed to fetch events:", err));
+}
+
 const chats = {
   jules: {
     eventId: 3,
@@ -458,3 +474,4 @@ renderChatHeader();
 renderChatMessages();
 renderChatSwitcher();
 refresh();
+loadEventsFromServer();

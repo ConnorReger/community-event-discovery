@@ -293,31 +293,26 @@ if (createButton) {
     document.getElementById("event-modal").style.display = "none";
     document.body.style.overflow = "";
     dropMode = false;
-    if (fab) fab.style.background = "";
-    map.getContainer().style.cursor = "";
 
-    const payload = {
+    const d = new Date(datetime);
+    const weekday = d.toLocaleString([], { weekday: 'short' });
+    const time = d.toLocaleString([], { hour: 'numeric', minute: '2-digit' });
+    const date = d.toLocaleString([], { month: 'short', day: 'numeric' });
+    const formatted = `${weekday}, ${date} · ${time}`;
+
+    const newEvent = {
+      id: Date.now(),
       title,
       type: isPrivate ? "private" : "public",
-      start_time: datetime,
+      time: formatted,
       lat: pendingLatLng.lat,
       lng: pendingLatLng.lng,
     };
 
-    fetch("http://localhost:5000/events", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status !== "ok") {
-          console.error("Create failed:", data.message);
-          return;
-        }
-        loadEventsFromServer();
-      })
-      .catch((err) => console.error("Network error:", err));
+    events.push(newEvent);
+    if (fab) fab.style.background = "";
+    map.getContainer().style.cursor = "";
+    refresh();
   });
 }
 

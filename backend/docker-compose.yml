@@ -1,0 +1,24 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: droppin_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: adminpasskey
+      MYSQL_DATABASE: droppin_db
+      MYSQL_USER: droppin
+      MYSQL_PASSWORD: droppin
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+ 
+volumes:
+  db_data:
+ 

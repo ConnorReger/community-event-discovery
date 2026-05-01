@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DropPin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <a class="logo" href="index.html">Drop<span>Pin</span></a>
+      <div class="actions">
+        <a class="btn" href="login.html">Log in</a>
+        <button class="btn primary" id="new-event-btn">+ New event</button>
+      </div>
+    </header>
+
+    <!-- Right Bar -->
+
+    <div id="main">
+      <aside id="sidebar">
+        <div id="sidebar-header">
+          <input type="text" id="search-input" placeholder="Search events..." />
+        </div>
+
+        <div class="filter-row">
+          <span class="chip active" data-filter="all">All</span>
+          <span class="chip" data-filter="today">Today</span>
+          <span class="chip" data-filter="week">This week</span>
+          <span class="chip" data-filter="public">Public</span>
+        </div>
+
+        <div id="event-list"></div>
+      </aside>
+
+      <div id="map-container">
+        <div id="map"></div>
+
+        <!-- Chat Room Call Button -->
+
+        <div id="chat-launch-area">
+          <button id="chat-launcher" title="Open private chat">
+            <span class="chat-launch-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                <path
+                  d="M20 11.2C20 6.67 16.42 3 12 3S4 6.67 4 11.2c0 2.03.72 3.89 1.92 5.33L5 21l4.8-1.57c.69.19 1.43.29 2.2.29 4.42 0 8-3.67 8-8.52Z"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <span>Private chat</span>
+          </button>
+        </div>
+
+        <!-- Chat Feature -->
+
+        <section id="chat-popup" class="open" aria-label="Private chat window">
+          <div id="chat-header">
+            <div class="chat-user">
+              <div class="chat-avatar">J</div>
+              <div class="chat-user-meta">
+                <strong id="chat-title">jules.m</strong>
+                <span id="chat-subtitle">Private Rooftop Hangout</span>
+              </div>
+            </div>
+            <div class="chat-header-actions">
+              <button class="chat-icon-btn" id="chat-switcher-toggle" title="Switch conversation">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                  <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </button>
+              <button class="chat-icon-btn" id="chat-minimize" title="Minimize chat">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                  <path d="M6 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </button>
+              <button class="chat-icon-btn" id="chat-close" title="Close chat">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                  <path d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="chat-switcher" class="hidden" aria-label="Direct message switcher">
+            <button class="chat-switch-item active" data-chat-id="jules">
+              <span class="switch-avatar">J</span>
+              <span class="switch-meta">
+                <strong>jules.m</strong>
+                <small>Private Rooftop Hangout</small>
+              </span>
+            </button>
+            <button class="chat-switch-item" data-chat-id="maya">
+              <span class="switch-avatar">M</span>
+              <span class="switch-meta">
+                <strong>maya.r</strong>
+                <small>Late night planning</small>
+              </span>
+            </button>
+            <button class="chat-switch-item" data-chat-id="leo">
+              <span class="switch-avatar">L</span>
+              <span class="switch-meta">
+                <strong>leo.k</strong>
+                <small>Coffee after cleanup?</small>
+              </span>
+            </button>
+          </div>
+
+          <div id="chat-thread-meta">
+            <div class="chat-thread-avatar">J</div>
+            <h3 id="chat-thread-name">jules.m</h3>
+            <p id="chat-thread-handle">@julesm</p>
+            <span class="chat-thread-badge">Private thread</span>
+          </div>
+
+          <div id="chat-messages">
+            <div class="message-row other">
+              <div class="message other">You still coming tonight?</div>
+            </div>
+            <div class="message-row me">
+              <div class="message me">Yeah, I’m in. What time are you heading up?</div>
+            </div>
+            <div class="message-row other">
+              <div class="message other">7 works. Bring a jacket, it gets windy.</div>
+            </div>
+          </div>
+
+          <form id="chat-form">
+            <div id="chat-input-wrap">
+              <button type="button" class="composer-icon" title="Attach">
+                <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
+                  <path
+                    d="M12.5 7.5 8 12a3 3 0 1 0 4.24 4.24l5.26-5.25a5 5 0 0 0-7.07-7.07L4.82 9.53"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <input type="text" id="chat-text-input" placeholder="Message..." autocomplete="off" />
+              <button type="submit" id="chat-send-btn">Send</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Create New Event -->
+
+        <button id="fab" title="Drop a pin">
+          <svg viewBox="0 0 24 24" fill="white" width="20" height="20">
+            <path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Event Modal -->
+    <div class="event-modal" id="event-modal" style="display:none;">
+      <div class="event-modal-box" id="event-modal-box">
+        <h1 class="logo" style="text-align: center; font-size:36px;">Create<span>Event</span></h1>
+
+        <div id="event-name" class="modal-field">
+          <h2 class="logo" style="font-size: 18px; font-weight: 600;">Event Name:</h2>
+          <input type="text" id="name-input" class="modal-input" placeholder="ex: Study Session" />
+        </div>
+
+        <div id="event-date-time" class="modal-field">
+          <h2 class="logo" style="font-size: 18px; font-weight: 600;">Schedule Your Event:</h2>
+          <input type="datetime-local" id="date-input" class="modal-input"/>
+        </div>
+
+        <div id="event-privacy" class="modal-field">
+          <h2 class="logo" style="font-size: 18px; font-weight: 600;">Public </h2>
+          <label class="toggle">
+            <input type="checkbox" id="private-input"/>
+            <span class="toggle-track"></span>
+          </label>
+          <h2 class="logo" style="font-size: 18px; font-weight: 600;"> Private</h2>
+        </div>
+
+        <div id="form-submission" class="modal-field" style="justify-content: center;">
+          <button id="cancel-button" class="btn" style="font-weight: 500; font-size: 18px;">Cancel</button>
+          <button id="create-button" class="btn primary" style="font-weight: 500; font-size: 18px;">+ Create</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

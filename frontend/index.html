@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DropPin</title>
+ 
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+ 
+  <!-- App CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+ 
+  <div id="app">
+ 
+    <header id="topbar-main">
+      <div class="logo">Drop<span>Pin</span></div>
+      <div class="actions">
+        <button class="btn">Log in</button>
+        <button class="btn primary" id="new-event-btn">+ New event</button>
+      </div>
+    </header>
+ 
+    <!-- Full sized logo -->
+    <div id="main-hero" style="text-align: center;">
+      <div class="logo" style="font-size: 80px; font-weight: 600; letter-spacing: -0.4px; margin: 0 auto 20px auto;">Drop<span>Pin</span></div>
+      <div class="tagline">Streamlining finding and creating events to share with friends and the community</div>
+      <!-- <div class="hero-actions">
+        <button class="btn">Log in</button>
+        <a class="btn primary" id="new-event-btn" href="login.html" style="text-decoration: none;">+ Create Event</a>
+      </div>       -->
+      <div class="hero-actions">
+        <a class="btn" href="login.html" style="text-decoration: none;">Log in</a>
+        <a class="btn primary" id="new-event-btn" href="login.html" style="text-decoration: none;">+ Create Event</a>
+      </div>
+      <div id="map-container-main">
+        <div id="map"></div>
+        <!-- Full size button rests over the map-->
+        <a href="map.html" id="fullsize-btn">⛶ Full Size</a>
+      </div>
+      <div class="tagline">For Academics, Enrichment, and Entertainment</div>
+  </div>
+ 
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+ 
+  <!-- App JS -->
+  <script src="app.js"></script>
+ 
+</body>
+</html>
+ 
